@@ -1,0 +1,348 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+	<title>{{ search }} - Malicious Url Detection Report</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if css == 1 %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='classic_detection.css') }}">
+    {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='detection.css') }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
+    {{ stats_text_color|safe }}
+    <style>
+        @font-face {
+            font-family: "Helvetica Rounded";
+            src: url('{{ url_for('static', filename='fonts/helvetica-rounded.otf') }}') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-text">
+            <a href="/" class="header-link">
+                <span class="header1">Malicious</span><span class="header2"> Url Detection</span>
+            </a>
+        </h1>
+    </div>
+
+	<h2>Categories</h2>
+    <div class="container">
+    <ul>
+        {% for key, value in categories.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+    </ul>
+    </div>
+
+    <h2>Last Analysis Statistics</h2>
+    <div class="container">
+    <div class="engines">
+        <div class="circle">
+          <div class="positives" clean=""> {{ last_analysis_stats.malicious }} </div>
+          <div class="total"> / {{ stats_antivirus_count }} </div>
+        </div>
+        <svg id="circularProgressbar" class="circle-progressbar" height="100" width="100" style="stroke-dashoffset: 0px; stroke-dasharray: 282.743px;">
+          <circle cx="50" cy="50" r="45" stroke-width="10" fill="transparent" stroke="{{ stats_color }}"></circle>
+        </svg>
+      </div>
+    </div>
+
+    <h2>Community</h2>
+    <div class="container">
+    <ul>
+        {% for key, value in total_votes.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+        <li class="containerinside">Reputation: {{ reputation }}</li>
+    </ul>
+    </div>
+
+    <h2>Popularity</h2>
+    <div class="container">
+    <ul>
+        {% for key, value in popularity_ranks.items() %}
+            <li class="containerinside">{{ key }}: {{ value.rank }}<br></li>
+        {% endfor %}
+    </ul>
+    </div>
+
+	<h2>Last DNS Records</h2>
+    <div class="container">
+        <ul>
+            {% for value in last_dns_records %}
+            <br>
+                    {% for k, v in value.items() %}
+                        <li class="containerinside">{{ k }}: {{ v }}</li>
+                    {% endfor %}
+            {% endfor %}
+        </ul>
+        </div>
+
+	<h2>Last HTTPS Certificate</h2>
+    <div class="container">
+    <ul>
+    <li class="containerinside">Date: {{ last_https_certificate_date }}</li>
+    <li class="containerinside">JARM Fingerprint: {{ jarm }}</li>
+    <h4>Issuer:</h4>
+        {% for key, value in last_https_certificate.issuer.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+    <h4>Validity:</h4>
+    <li class="containerinside">Not Before: {{ last_https_certificate.validity.not_before }}</li>
+    <li class="containerinside">Not After: {{ last_https_certificate.validity.not_after }}</li>
+    <h4>Subject:</h4>
+        {% for key, value in last_https_certificate.subject.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+    <h4>Subject Public Key Info:</h4>
+    <li class="containerinside">Algorithm: {{ public_key.algorithm }}</li>
+        {% for key, value in public_key.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+    <br>
+    <h4>X509v3 Extensions:</h4>
+    <li class="containerinside">Authority Key Identifier: {{ last_https_certificate.extensions.authority_key_identifier.keyid }}</li>
+    <li class="containerinside">Subject Key Identifier: {{ last_https_certificate.extensions.subject_key_identifier }}</li>
+    <h4>Subject Alternative Name:</h4>
+        {% for Nvalue in last_https_certificate.extensions.subject_alternative_name %}
+            <li class="containerinside">{{ Nvalue }}<br></li>
+        {% endfor %}
+    <h4>Key Information:</h4>
+    <li class="containerinside">Key Usage: {{ last_https_certificate.extensions.key_usage.0 }}</li>
+    <li class="containerinside">Extended Key Usage: {{ last_https_certificate.extensions.extended_key_usage }}</li>
+    <h4>CRL Distribution Points:</h4>
+        {% for value in last_https_certificate.extensions.crl_distribution_points %}
+            <li class="containerinside">{{ value }}<br></li>
+        {% endfor %}
+    <h4>Authority Information Access:</h4>
+        {% for key, value in last_https_certificate.extensions.ca_information_access.items() %}
+            <li class="containerinside">{{ key }}: {{ value }}<br></li>
+        {% endfor %}
+    <li class="containerinside">Signature Algorithm: {{ last_https_certificate.cert_signature.signature_algorithm }}</li>
+    <li class="containerinside">Signature: {{ last_https_certificate.cert_signature.signature }}</li>
+    </ul>
+    </div>
+
+	<h2>Whois Lookup</h2>
+    <div class="container">
+    <div class="hover-message">Hover over to see the content.</div>
+    <div class="whois-content">
+	<ul>
+    <li>{{ whois|safe }}</li>
+	</ul>
+    </div>
+    </div>
+    <br>
+    <h1>Last Analysis Results</h1>
+    <div class="results-grid">
+        {% for key, value in last_analysis_results.items() %}
+            <div class="result-item">
+                <h2>{{ key }}</h2>
+                <ul>
+                    {% for k, v in value.items() %}
+                        <li><span>{{ k }}:</span> {{ v }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://github.com/MugoSquero/Malicious Url Detection" target="_blank">Source Code</a>
+                    <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">License (AGPLv3)</a>
+                    <a href="{{ url_for('static', filename='policy.txt') }}" target="_blank">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ search }} -  Malicious Url Detection Report</title>
+  <!-- اختيار ملف CSS بناءً على المتغير -->
+  {% if css == 1 %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='classic_detection.css') }}">
+  {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='detection.css') }}">
+  {% endif %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  {{ stats_text_color|safe }}
+  
+  <!-- تضمين خطوط خارجية لتحسين التصميم -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* إعادة تعيين الأنماط */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: #ffffff; /* خلفية بيضاء */
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    /* تنسيق الترويسة */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .header-text {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #444;
+    }
+    
+    /* منطقة المحتوى الرئيسية */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* تحسين عرض التقارير */
+    .report-section {
+      background-color: #f8f8f8;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s;
+    }
+    
+    .report-section:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .report-title {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #007BFF;
+    }
+    
+    .report-content {
+      font-size: 1rem;
+    }
+    
+    /* تنسيق الجداول إن وجدت */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f0f0f0;
+    }
+    
+    /* روابط وأزرار */
+    a {
+      color: #007BFF;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    a:hover {
+      color: #0056b3;
+    }
+    
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 1rem;
+    }
+    
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ترويسة الصفحة -->
+    <div class="header">
+      <h1 class="header-text">
+        {{ search }} - Malicious Url Detection Report
+      </h1>
+    </div>
+    
+    <!-- منطقة عرض النتائج -->
+    <div class="report-section">
+      <h2 class="report-title">نتائج الكشف</h2>
+      <div class="report-content">
+        <!-- محتوى التقرير سيتم عرضه هنا -->
+        {{ result_content|safe }}
+      </div>
+    </div>
+    
+    <!-- يمكنك إضافة أقسام إضافية إذا لزم الأمر -->
+    <div class="report-section">
+      <h2 class="report-title">تفاصيل إضافية</h2>
+      <div class="report-content">
+        <!-- محتويات إضافية -->
+        {{ additional_info|safe }}
+      </div>
+    </div>
+    
+    <!-- إذا كان هناك جداول لعرض البيانات -->
+    {% if table_data %}
+    <table>
+      <thead>
+        <tr>
+          <th>العنصر</th>
+          <th>القيمة</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in table_data %}
+        <tr>
+          <td>{{ row.item }}</td>
+          <td>{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+</body>
+</html>

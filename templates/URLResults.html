@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ search }} - Malicious Url Detection Report</title>
+  
+  {% if css == 1 %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='classic_detection.css') }}">
+  {% else %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='detection.css') }}">
+  {% endif %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  {{ stats_text_color|safe }}
+  
+  <!-- تضمين خطوط خارجية -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* إعادة تعيين الأنماط الافتراضية */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* إعداد الخلفية والخطوط الأساسية */
+    body {
+      background-color: #ffffff;
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    /* ترويسة الصفحة */
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 30px;
+    }
+    
+    .header-text {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #444;
+    }
+    
+    .header-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* تنسيق الحاويات الداخلية */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    
+    .container ul {
+      list-style: none;
+    }
+    
+    .container li {
+      padding: 8px 0;
+      border-bottom: 1px solid #e6e6e6;
+    }
+    
+    .container li:last-child {
+      border-bottom: none;
+    }
+    
+    /* تنسيق العناوين الرئيسية */
+    h1, h2, h4 {
+      margin-bottom: 15px;
+      color: #444;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-top: 30px;
+    }
+    
+    /* تنسيق قسم الإحصائيات والأشكال */
+    .engines {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+    }
+    
+    .circle {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 10px;
+      text-align: center;
+      line-height: 100px;
+      font-size: 1.3rem;
+      color: #28a745;
+    }
+    
+    .circle .positives {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    
+    .circle-progressbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg);
+    }
+    
+    /* شبكة نتائج التحليل */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .result-item {
+      background-color: #fdfdfd;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .result-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    
+    .result-item h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #28a745;
+    }
+    
+    .result-item ul {
+      list-style: none;
+    }
+    
+    .result-item li {
+      padding: 5px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    /* تنسيق الروابط */
+    a {
+      color: #28a745;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    a:hover {
+      color: #1e7e34;
+    }
+    
+    /* تنسيق الأزرار وتغير ألوانها */
+    input[type="submit"],
+    button {
+      padding: 12px 25px;
+      background-color: #28a745; /* لون أخضر أساسي */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    input[type="submit"]:hover,
+    button:hover {
+      background-color: #1e7e34; /* تدرج أخضر أغمق عند التمرير */
+    }
+    
+    /* تنسيق التذييل */
+    .site-footer {
+      background-color: #f1f1f1;
+      padding: 20px;
+      text-align: center;
+      margin-top: 40px;
+      border-top: 1px solid #ddd;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-links a {
+      margin: 0 10px;
+      font-size: 0.9rem;
+    }
+    
+    /* تخصيص الخطوط */
+    @font-face {
+      font-family: "Helvetica Rounded";
+      src: url('{{ url_for('static', filename='fonts/helvetica-rounded.otf') }}') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
+  
+</head>
+<body>
+  <!-- ترويسة الصفحة -->
+  <div class="header">
+    <h1 class="header-text">
+      <a href="/" class="header-link">
+        <span class="header1">Malicious</span><span class="header2"> Url Detection</span>
+      </a>
+    </h1>
+  </div>
+  
+  <!-- قسم التصنيفات -->
+  <h2>Categories</h2>
+  <ul>
+    {% for key, value in categories.items() %}
+        <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">{{ key }}: {{ value }}</li>
+    {% endfor %}
+  </ul>
+  
+  <h2>Last Analysis Statistics</h2>
+<div style="background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 30px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+    <!-- دائرة التقدم -->
+    <div style="position: relative; width: 140px; height: 140px;">
+      <svg width="140" height="140">
+        <circle cx="70" cy="70" r="60" stroke="#e6e6e6" stroke-width="12" fill="none" />
+        <circle cx="70" cy="70" r="60" stroke="{{ stats_color }}" stroke-width="12" fill="none"
+                stroke-dasharray="377"
+                stroke-dashoffset="{{ 377 - (last_analysis_stats.malicious / stats_antivirus_count * 377) }}"
+                transform="rotate(-90 70 70)" />
+      </svg>
+      <!-- النص داخل الدائرة -->
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.8rem; font-weight: bold; color: #28a745;">
+        {{ last_analysis_stats.malicious }}
+        <div style="font-size: 1rem; font-weight: normal; color: #333;">/ {{ stats_antivirus_count }}</div>
+      </div>
+    </div>
+
+    <!-- معلومات إحصائية بجانب الدائرة -->
+    <div style="text-align: left;">
+      <p style="font-size: 1.2rem; margin: 10px 0;"><strong>Malicious Detections:</strong> {{ last_analysis_stats.malicious }}</p>
+      <p style="font-size: 1.2rem; margin: 10px 0;"><strong>Total Engines:</strong> {{ stats_antivirus_count }}</p>
+      <p style="font-size: 1.2rem; margin: 10px 0; color: {% if last_analysis_stats.malicious > 0 %}#dc3545{% else %}#28a745{% endif %};">
+        {% if last_analysis_stats.malicious > 0 %}
+          ⚠️ Threat Detected
+        {% else %}
+          ✅ Clean
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- قسم المجتمع -->
+<h2>Community</h2>
+<div class="container" style="background-color: #f9f9f9; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+  <ul style="list-style: none; margin: 0; padding: 0;">
+    {% for key, value in total_votes.items() %}
+      <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">{{ key }}: {{ value }}</li>
+    {% endfor %}
+    <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">Reputation: {{ reputation }}</li>
+  </ul>
+</div>
+
+<!-- قسم رؤوس الاستجابة HTTP الأخيرة -->
+<h2>Last HTTP Response Headers</h2>
+<div class="container" style="background-color: #f9f9f9; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+  <ul style="list-style: none; margin: 0; padding: 0;">
+    <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">Response Code: {{ last_http_response_code }}</li>
+    {% for key, value in last_http_response_headers.items() %}
+      <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">{{ key }}: {{ value }}</li>
+    {% endfor %}
+    <h4 style="margin: 15px 0; color: #444;">More Info</h4>
+    <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">Title: {{ title }}</li>
+  </ul>
+</div>
+
+<!-- قسم الروابط الصادرة -->
+<h2>Outgoing Links</h2>
+<div class="container" style="background-color: #f9f9f9; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;">
+  <ul style="list-style: none; margin: 0; padding: 0;">
+    {% for value in outgoing_links %}
+      <li style="padding: 8px 0; border-bottom: 1px solid #e6e6e6; background-color: #f2f2f2;">{{ value }}</li>
+    {% endfor %}
+  </ul>
+</div>
+!-- قسم نتائج التحليل الأخيرة -->
+  <br>
+  <h1>Last Analysis Results</h1>
+  <div class="results-grid">
+    {% for key, value in last_analysis_results.items() %}
+      <div class="result-item">
+        <h2>{{ key }}</h2>
+        <ul>
+          {% for k, v in value.items() %}
+            <li><span>{{ k }}:</span> {{ v }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <!-- تذييل الصفحة -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="{{ url_for('static', filename='policy.txt') }}" target="_blank">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

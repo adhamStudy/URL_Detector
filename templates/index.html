@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malicious Url Detection</title>
+  <!-- ربط ملفات CSS الخارجية إن وُجدت -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='footer.css') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
+  
+  <!-- تضمين خطوط خارجية إن رغبت -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* إعادة تعيين الأنماط الافتراضية */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    /* إعداد الخطوط الأساسية */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #ffffff; /* خلفية بيضاء */
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    /* ترويسة الصفحة */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .header-text {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #444;
+    }
+    .header-link {
+      text-decoration: none;
+      color: inherit;
+    }
+    /* تنسيق الإستمارة */
+    form {
+      background-color: #f8f8f8;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+      transition: transform 0.3s;
+    }
+    form:hover {
+      transform: scale(1.01);
+    }
+    input[type="text"],
+    input[type="search"] {
+      width: calc(100% - 140px);
+      padding: 12px 15px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    input[type="submit"],
+    button {
+      padding: 12px 25px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    input[type="submit"]:hover,
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* تنسيق الروابط */
+    a {
+      color: #007BFF;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    a:hover {
+      color: #0056b3;
+    }
+    /* تنسيق المحتوى الرئيسي */
+    .main-content {
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+    /* تأثيرات إضافية لتحسين المظهر */
+    .card {
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s;
+    }
+    .card:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+    <div class="content">
+    <div class="header">
+        <h1 class="header-text">
+            <a href="/" class="header-link">
+                <span class="header1">Malicious</span><span class="header2"> Url Detection</span>
+            </a>
+        </h1>
+    </div>
+		<form method="GET" action="/gui/search">
+			<input type="text" id="hashValue" name="query" placeholder="Search for file hashes, IP addresses, domains or URLs...">
+			<input type="submit" value="Search">
+		</form>
+    </div>
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-links">
+                    </div>
+                </div>
+            </div>
+        </footer>
+</body>
+
+</html>
